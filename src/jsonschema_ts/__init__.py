@@ -1,3 +1,5 @@
+from jsonschema_ts._converter import convert, convert_all
+from jsonschema_ts._defs_collector import collect_defs
 from jsonschema_ts._errors import ConversionError, JsonschemaTsError, NodeRequiredError
 from jsonschema_ts._options import Options
 from jsonschema_ts._utils import _ensure_npx
