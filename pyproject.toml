@@ -44,6 +44,7 @@ packages = ["src/jsonschema_ts"]
 [tool.ruff]
 line-length = 88
 target-version = "py311"
+src = ["src"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -52,6 +53,9 @@ line-ending = "auto"
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["jsonschema_ts"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

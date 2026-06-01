@@ -91,6 +91,7 @@ def _to_npx(schema: dict, opts: Options) -> str:
             f"Stderr: {e.stderr.strip()}"
         ) from e
     except subprocess.TimeoutExpired:
-        raise ConversionError("json-schema-to-typescript timed out after 30s.") from None
+        msg = "json-schema-to-typescript timed out after 30s."
+        raise ConversionError(msg) from None
     finally:
         os.unlink(temp_path)
