@@ -1,0 +1,49 @@
+---
+title: Options Reference
+description: Configuration options for jsonschema-ts
+---
+
+## Options Dataclass
+
+```python
+from dataclasses import dataclass
+from jsonschema_ts import Options
+
+opts = Options(
+    banner_comment=None,     # Header comment (None to use default)
+    format=True,             # Prettier formatting of output
+    unknown_any=True,        # Use `unknown` instead of `any`
+    unreachable_definitions=True,  # Include $defs not referenced by root
+    npx_cache=None,          # Custom npx cache directory
+)
+```
+
+### banner_comment
+
+Type: `str | None` — Default: the pyrpc codegen banner
+
+Header comment placed at the top of generated output. Set to `None` for the default banner, or an empty string to omit entirely.
+
+### format
+
+Type: `bool` — Default: `True`
+
+Whether to format the output with Prettier. Set to `False` for faster conversion (skips the formatting step).
+
+### unknown_any
+
+Type: `bool` — Default: `True`
+
+When `True`, schemas with no explicit type resolve to `unknown`. When `False`, they resolve to `any`.
+
+### unreachable_definitions
+
+Type: `bool` — Default: `True`
+
+When `True`, `$defs` entries not directly referenced by the root schema are still included in the output.
+
+### npx_cache
+
+Type: `str | None` — Default: `None`
+
+Custom directory for npx's cache. Useful in CI environments where you want to cache the `json-schema-to-typescript` download.
