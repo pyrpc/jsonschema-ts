@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-from jsonschema_ts._errors import NodeRequiredError
-from jsonschema_ts._utils import _ensure_npx, _ensure_schema_has_title, _postprocess, _to_safe_name
+from jsonschema_ts._utils import (
+    _ensure_schema_has_title,
+    _postprocess,
+    _to_safe_name,
+)
 
 
 def test_to_safe_name_pascal():

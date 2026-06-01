@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from jsonschema_ts._emitter import _strip_root_interface, assemble
-from jsonschema_ts._utils import DEFAULT_BANNER
 
 
 def test_assemble_models_only():
-    result = assemble(models="export interface User { name: string; }", procedures="", banner="")
+    result = assemble(
+        models="export interface User { name: string; }",
+        procedures="",
+        banner="",
+    )
     assert "export interface User" in result
     assert "Models" in result
     assert "Procedures" not in result
@@ -28,7 +31,11 @@ def test_assemble_both():
 
 
 def test_assemble_with_banner():
-    result = assemble(models="export interface X { x: number; }", procedures="", banner="/* my banner */")
+    result = assemble(
+        models="export interface X { x: number; }",
+        procedures="",
+        banner="/* my banner */",
+    )
     assert "my banner" in result
 
 

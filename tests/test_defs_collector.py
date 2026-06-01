@@ -4,8 +4,6 @@ import json
 import warnings
 from pathlib import Path
 
-import pytest
-
 from jsonschema_ts._defs_collector import collect_defs
 
 FIXTURES = Path(__file__).parent / "fixtures"
