@@ -1,0 +1,20 @@
+{
+  "title": "Outer",
+  "$defs": {
+    "Middle": {
+      "type": "object",
+      "$defs": {
+        "Inner": {
+          "type": "object",
+          "properties": {"x": {"type": "integer"}}
+        }
+      },
+      "properties": {
+        "inner": {"$ref": "#/$defs/Inner"}
+      }
+    }
+  },
+  "properties": {
+    "middle": {"$ref": "#/$defs/Middle"}
+  }
+}

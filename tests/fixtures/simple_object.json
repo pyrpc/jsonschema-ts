@@ -1,0 +1,12 @@
+{
+  "title": "SimpleObject",
+  "type": "object",
+  "properties": {
+    "name": {"type": "string"},
+    "age": {"type": "integer"},
+    "score": {"type": "number"},
+    "active": {"type": "boolean"},
+    "nickname": {"type": "null"}
+  },
+  "required": ["name", "age", "score", "active"]
+}

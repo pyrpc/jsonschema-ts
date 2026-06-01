@@ -1,0 +1,26 @@
+{
+  "title": "Employee",
+  "type": "object",
+  "properties": {
+    "name": {"type": "string"},
+    "manager": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "title": {"type": "string"}
+      },
+      "required": ["name"]
+    },
+    "reports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"}
+        },
+        "required": ["name"]
+      }
+    }
+  },
+  "required": ["name"]
+}
