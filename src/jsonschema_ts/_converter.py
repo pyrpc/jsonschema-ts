@@ -24,7 +24,7 @@ def convert(schema: dict, name: str, opts: Options | None = None) -> str:
     opts = opts or Options()
     _ensure_schema_has_title(schema, name)
     ts_code = _to_npx(schema, opts)
-    return _postprocess(ts_code, name)
+    return _postprocess(ts_code)
 
 
 def convert_all(defs: dict[str, dict], opts: Options | None = None) -> str:

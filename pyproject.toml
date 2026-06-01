@@ -29,7 +29,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/pyrpc/jsonschema-ts"
 Repository = "https://github.com/pyrpc/jsonschema-ts"
-Documentation = "https://jsonschema-ts.dev"
+Documentation = "https://github.com/pyrpc/jsonschema-ts"
 
 [project.optional-dependencies]
 dev = [
@@ -44,6 +44,11 @@ packages = ["src/jsonschema_ts"]
 [tool.ruff]
 line-length = 88
 target-version = "py311"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I"]

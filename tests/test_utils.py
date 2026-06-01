@@ -33,5 +33,5 @@ def test_ensure_schema_has_title_preserves():
 
 
 def test_postprocess_strips():
-    result = _postprocess("\n  export interface Foo {}\n\n", "Foo")
+    result = _postprocess("\n  export interface Foo {}\n\n")
     assert result == "export interface Foo {}"
