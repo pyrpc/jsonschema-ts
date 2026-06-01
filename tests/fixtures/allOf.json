@@ -1,0 +1,24 @@
+{
+  "title": "AdminUser",
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "email": {"type": "string"}
+      },
+      "required": ["name", "email"]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "role": {"type": "string"},
+        "permissions": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "required": ["role"]
+    }
+  ]
+}

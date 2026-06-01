@@ -28,7 +28,7 @@ def _ensure_npx() -> None:
 
 def _to_safe_name(name: str) -> str:
     s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
-    s = re.sub(r"[^a-zA-Z0-9_]", " ", s)
+    s = re.sub(r"[^a-zA-Z0-9]", " ", s)
     s = s.title().replace(" ", "")
     if not s:
         s = "GeneratedType"

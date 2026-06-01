@@ -1,0 +1,5 @@
+{
+  "title": "ApiVersion",
+  "type": "string",
+  "const": "v1"
+}
