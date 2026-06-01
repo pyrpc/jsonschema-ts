@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "id": {
+      "anyOf": [{"type": "integer"}, {"type": "null"}],
+      "default": null,
+      "title": "Id"
+    },
+    "name": {"title": "Name", "type": "string"},
+    "email": {"title": "Email", "type": "string"},
+    "tags": {
+      "items": {"type": "string"},
+      "title": "Tags",
+      "type": "array"
+    },
+    "profile": {"$ref": "#/$defs/Profile"}
+  },
+  "required": ["name", "email"],
+  "title": "User",
+  "type": "object",
+  "$defs": {
+    "Profile": {
+      "properties": {
+        "bio": {"title": "Bio", "type": "string"},
+        "avatar_url": {"title": "Avatar Url", "type": "string"},
+        "social_links": {
+          "items": {"type": "string"},
+          "title": "Social Links",
+          "type": "array"
+        }
+      },
+      "required": ["bio"],
+      "title": "Profile",
+      "type": "object"
+    }
+  }
+}
