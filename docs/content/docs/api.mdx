@@ -1,0 +1,92 @@
+---
+title: API Reference
+description: Complete API documentation for jsonschema-ts
+---
+
+## convert(schema, name, opts?)
+
+Convert a single JSON Schema dict to a TypeScript interface.
+
+```python
+from jsonschema_ts import convert
+
+ts = convert(
+    schema={"type": "object", "properties": {"name": {"type": "string"}}},
+    name="User",
+)
+# export interface User {
+#   name: string;
+# }
+```
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `schema` | `dict` | Yes | JSON Schema dict (draft-07+) |
+| `name` | `str` | Yes | TypeScript interface name (PascalCase) |
+| `opts` | `Options \| None` | No | Configuration |
+
+**Returns:** `str` — TypeScript source code with `export interface` declaration.
+
+## convert_all(defs, opts?)
+
+Convert all schemas in a `$defs` dict to TypeScript interfaces (batched in one npx call).
+
+```python
+from jsonschema_ts import convert_all
+
+defs = {
+    "User": {
+        "type": "object",
+        "properties": {"id": {"type": "integer"}},
+    },
+    "Address": {
+        "type": "object",
+        "properties": {"city": {"type": "string"}},
+    },
+}
+
+ts = convert_all(defs)
+# export interface Address {
+#   city: string;
+# }
+# export interface User {
+#   id: number;
+# }
+```
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `defs` | `dict[str, dict]` | Yes | Dict of `$defs` entries |
+| `opts` | `Options \| None` | No | Configuration |
+
+**Returns:** `str` — All interfaces joined by double newlines.
+
+## collect_defs(*schemas)
+
+Extract and merge `$defs` from one or more JSON Schema dicts.
+
+```python
+from jsonschema_ts import collect_defs
+
+defs = collect_defs(schema1, schema2)
+# { "User": { "type": "object", ... }, "Post": { ... } }
+```
+
+Features:
+- Recursive collection — a `$def` containing its own `$defs`
+- Deduplication — last-wins with warning on conflict
+- Circular safety — prevents infinite loops via `id()` tracking
+- No `$defs` — returns `{}`
+
+## ensure_npx()
+
+Check that npx is available. Raises `NodeRequiredError` if not.
+
+```python
+from jsonschema_ts import ensure_npx
+
+try:
+    ensure_npx()
+except NodeRequiredError as e:
+    print(e)  # "jsonschema-ts requires Node.js >= 18 and npx."
+```

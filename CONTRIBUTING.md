@@ -16,6 +16,9 @@ pip install -e ".[dev]"
 
 # Install pre-commit hooks
 pre-commit install
+
+# Install docs site dependencies
+cd docs && npm install
 ```
 
 ## Running Tests
@@ -77,5 +80,5 @@ src/jsonschema_ts/        # Source code
   _utils.py               # Utilities
 tests/                    # Tests (mirrors src structure)
   fixtures/               # JSON Schema fixtures
-docs/                     # Single-page doc site
+docs/                     # Next.js/Fumadocs documentation site
 ```

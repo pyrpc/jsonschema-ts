@@ -1,0 +1,74 @@
+---
+title: Getting Started
+description: Install and run your first conversion
+---
+
+## Installation
+
+```bash
+pip install jsonschema-ts
+```
+
+The first call to `convert()` will prompt `npx` to download `json-schema-to-typescript` automatically.
+
+## Quick Example
+
+```python
+from jsonschema_ts import convert
+
+schema = {
+    "type": "object",
+    "title": "User",
+    "properties": {
+        "id": {"type": "integer"},
+        "name": {"type": "string"},
+        "email": {"type": "string", "format": "email"},
+        "age": {"type": "integer", "minimum": 0},
+    },
+    "required": ["id", "name", "email"],
+}
+
+ts_code = convert(schema, "User")
+print(ts_code)
+# export interface User {
+#   id: number;
+#   name: string;
+#   email: string;
+#   age?: number;
+# }
+```
+
+## With $defs
+
+When your schema references other models via `$ref`:
+
+```python
+from jsonschema_ts import convert, convert_all, collect_defs
+
+schema = {
+    "type": "object",
+    "title": "Order",
+    "properties": {
+        "id": {"type": "integer"},
+        "user": {"$ref": "#/$defs/User"},
+        "items": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/OrderItem"},
+        },
+    },
+    "$defs": {
+        "User": {
+            "type": "object",
+            "properties": {"name": {"type": "string"}},
+        },
+        "OrderItem": {
+            "type": "object",
+            "properties": {"product_id": {"type": "integer"}},
+        },
+    },
+}
+
+defs = collect_defs(schema)
+model_interfaces = convert_all(defs)
+main_interface = convert(schema, "Order")
+```

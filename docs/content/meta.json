@@ -1,0 +1,9 @@
+{
+  "pages": [
+    "index",
+    "getting-started",
+    "api",
+    "pydantic-integration",
+    "options-reference"
+  ]
+}

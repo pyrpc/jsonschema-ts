@@ -1,0 +1,84 @@
+---
+title: Pydantic Integration
+description: Using jsonschema-ts with Pydantic v2 models
+---
+
+## From Pydantic Models
+
+```python
+from pydantic import BaseModel
+from jsonschema_ts import convert, convert_all, collect_defs
+
+class Address(BaseModel):
+    street: str
+    city: str
+    zip: str
+
+class UserWithAddress(BaseModel):
+    name: str
+    age: int
+    address: Address
+
+# Pydantic v2 output:
+schema = UserWithAddress.model_json_schema()
+# {
+#   "properties": {
+#     "name": {"title": "Name", "type": "string"},
+#     "address": {"$ref": "#/$defs/Address"}
+#   },
+#   "$defs": {
+#     "Address": {
+#       "properties": {
+#         "street": {"title": "Street", "type": "string"},
+#         "city": {"title": "City", "type": "string"},
+#         "zip": {"title": "Zip", "type": "string"}
+#       },
+#       "required": ["street", "city", "zip"],
+#       "title": "Address",
+#       "type": "object"
+#     }
+#   }
+# }
+
+defs = collect_defs(schema)
+model_interfaces = convert_all(defs)
+main_interface = convert(schema, "UserWithAddress")
+```
+
+This produces:
+
+```typescript
+export interface Address {
+  street: string;
+  city: string;
+  zip: string;
+}
+
+export interface UserWithAddress {
+  name: string;
+  age: number;
+  address: Address;
+}
+```
+
+## Full Pipeline Pattern
+
+Recommended pattern for pyRPC codegen:
+
+```python
+def generate_types(schema: dict) -> str:
+    from jsonschema_ts import convert, convert_all, collect_defs
+    from jsonschema_ts import Options
+
+    opts = Options(
+        banner_comment="/* @generated */",
+        format=True,
+        unknown_any=True,
+    )
+
+    defs = collect_defs(schema)
+    models = convert_all(defs, opts=opts)
+    main = convert(schema, schema.get("title", "Root"), opts=opts)
+
+    return assemble(models=models, procedures=main)
+```

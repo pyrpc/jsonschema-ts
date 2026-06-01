@@ -18,3 +18,9 @@ Thumbs.db
 
 # Specs design docs
 specs/
+
+# Docs site (Next.js)
+docs/node_modules/
+docs/.next/
+docs/out/
+docs/.source/
