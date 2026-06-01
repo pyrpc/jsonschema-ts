@@ -43,6 +43,8 @@ pytest --cov=jsonschema_ts --cov-report=term-missing
 - Type hints on all public functions (3.11+ syntax)
 - Private/internal functions prefixed with `_`
 - Docstrings on all public API functions
+- No em-dashes (--) in prose; use standard punctuation
+- No emoji in code, comments, or documentation
 
 Run linting:
 ```bash
@@ -56,16 +58,14 @@ ruff format --check .
 2. Write tests for any new functionality
 3. Ensure all tests pass
 4. Run `ruff check .` — no warnings
-5. Update `CHANGELOG.md`
-6. Open a PR with a clear description
+5. Open a PR with a clear description
 
 ## Release Process
 
 1. Update version in `pyproject.toml` and `__init__.py`
-2. Update `CHANGELOG.md`
-3. Create a Git tag: `git tag v<version>`
-4. Push tag: `git push origin v<version>`
-5. CI publishes to PyPI automatically
+2. Create a Git tag: `git tag v<version>`
+3. Push tag: `git push origin v<version>`
+4. CI publishes to PyPI automatically
 
 ## Project Structure
 
