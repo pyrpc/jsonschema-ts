@@ -1,0 +1,7 @@
+{
+  "title": "Identifier",
+  "anyOf": [
+    {"type": "integer"},
+    {"type": "string"}
+  ]
+}
