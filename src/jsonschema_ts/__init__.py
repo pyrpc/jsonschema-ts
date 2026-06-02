@@ -4,6 +4,8 @@ from jsonschema_ts._errors import ConversionError, JsonschemaTsError, NodeRequir
 from jsonschema_ts._options import Options
 from jsonschema_ts._utils import _ensure_npx
 
+__version__ = "0.1.0"
+
 __all__ = [
     "convert",
     "convert_all",
@@ -13,6 +15,7 @@ __all__ = [
     "JsonschemaTsError",
     "NodeRequiredError",
     "ConversionError",
+    "__version__",
 ]
 
 

@@ -9,8 +9,12 @@ from typing import Any
 from jsonschema_ts._emitter import _strip_root_interface
 from jsonschema_ts._errors import ConversionError
 from jsonschema_ts._options import Options
-from jsonschema_ts._utils import _ensure_npx, _ensure_schema_has_title, _postprocess, _to_safe_name
-
+from jsonschema_ts._utils import (
+    _ensure_npx,
+    _ensure_schema_has_title,
+    _postprocess,
+    _to_safe_name,
+)
 
 NPX_ARGS_BASE = [
     "npx",
@@ -24,7 +28,7 @@ def convert(schema: dict, name: str, opts: Options | None = None) -> str:
     opts = opts or Options()
     _ensure_schema_has_title(schema, name)
     ts_code = _to_npx(schema, opts)
-    return _postprocess(ts_code, name)
+    return _postprocess(ts_code)
 
 
 def convert_all(defs: dict[str, dict], opts: Options | None = None) -> str:
@@ -86,6 +90,7 @@ def _to_npx(schema: dict, opts: Options) -> str:
             f"Stderr: {e.stderr.strip()}"
         ) from e
     except subprocess.TimeoutExpired:
-        raise ConversionError("json-schema-to-typescript timed out after 30s.")
+        msg = "json-schema-to-typescript timed out after 30s."
+        raise ConversionError(msg) from None
     finally:
         os.unlink(temp_path)

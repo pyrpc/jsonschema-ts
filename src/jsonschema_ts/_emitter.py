@@ -24,9 +24,12 @@ def _strip_root_interface(ts_code: str, root_name: str = "__ROOT__") -> str:
         if line.strip().startswith(f"export interface {root_name}"):
             skip = True
             continue
-        if skip and line.strip() == "":
-            skip = False
-            continue
+        if skip:
+            if line.strip() == "":
+                skip = False
+                continue
+            if line.strip().startswith("export interface"):
+                skip = False
         if not skip:
             filtered.append(line)
     return "\n".join(filtered).strip()
