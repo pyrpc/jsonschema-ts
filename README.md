@@ -80,11 +80,26 @@ main = convert(schema, "User")
 ## API
 
 | Function | Description |
-|---|---|
+|---|---|---|
 | `convert(schema, name)` | Convert single JSON Schema → TypeScript interface |
 | `convert_all(defs)` | Convert all `$defs` → TypeScript interfaces (batch) |
 | `collect_defs(*schemas)` | Extract and merge `$defs` from schemas |
+| `assemble(models, procedures)` | Combine model interfaces + procedure types into final TS output |
 | `ensure_npx()` | Check Node.js/npx availability |
+
+```python
+from jsonschema_ts import collect_defs, convert, convert_all, assemble
+
+# ... convert schemas to TypeScript ...
+defs = collect_defs(schema)
+models = convert_all(defs)
+
+# Combine everything into final output
+output = assemble(
+    models=models,
+    procedures="export interface Types { greet(name: string): Promise<string>; }",
+)
+```
 
 ## Why a wrapper?
 
