@@ -16,7 +16,6 @@ from jsonschema_ts._utils import (
     _to_safe_name,
 )
 
-
 NPX_ARGS_BASE = [
     "npx",
     "--package=json-schema-to-typescript",
