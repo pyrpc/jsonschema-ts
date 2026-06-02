@@ -74,6 +74,19 @@ def test_strip_root_interface_no_root():
     assert result == "export interface Foo { x: number; }"
 
 
+def test_strip_root_interface_first_in_output():
+    ts_code = """export interface __ROOT__ {
+  _Post_ref: Post;
+}
+export interface Post {
+  title: string;
+}
+"""
+    result = _strip_root_interface(ts_code)
+    assert "__ROOT__" not in result
+    assert "export interface Post" in result
+
+
 def test_strip_root_interface_custom_name():
     ts_code = """export interface CustomRoot {
   x: number;
