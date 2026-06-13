@@ -7,7 +7,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from jsonschema_ts._errors import ConversionError
-from jsonschema_ts._npx_daemon import _NPXDaemon, convert as daemon_convert, stop
+from jsonschema_ts._npx_daemon import _NPXDaemon, stop
+from jsonschema_ts._npx_daemon import convert as daemon_convert
 
 
 def _mock_ensure_package(return_value="/fake/node_modules"):

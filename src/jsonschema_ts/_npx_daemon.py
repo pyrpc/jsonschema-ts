@@ -6,7 +6,6 @@ import os
 import subprocess
 import threading
 from pathlib import Path
-from typing import Any
 
 from jsonschema_ts._errors import ConversionError
 
@@ -47,7 +46,10 @@ class _NPXDaemon:
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)
         try:
             subprocess.run(
-                [npm, "install", "--prefix", str(_CACHE_DIR), "json-schema-to-typescript"],
+                [
+                    npm, "install", "--prefix",
+                    str(_CACHE_DIR), "json-schema-to-typescript",
+                ],
                 check=True,
                 capture_output=True,
                 timeout=60,

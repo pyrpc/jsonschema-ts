@@ -7,7 +7,7 @@ from unittest.mock import patch
 import pytest
 
 from jsonschema_ts import ConversionError, Options, convert, convert_all
-from jsonschema_ts._converter import _build_daemon_options, _to_npx, _to_npx_subprocess
+from jsonschema_ts._converter import _build_daemon_options, _to_npx
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -130,7 +130,10 @@ def test_to_npx_skips_daemon_when_disabled(mock_subprocess):
     mock_subprocess.assert_called_once_with(schema, opts)
 
 
-@patch("jsonschema_ts._converter.daemon_convert", side_effect=ConnectionError("daemon down"))
+@patch(
+    "jsonschema_ts._converter.daemon_convert",
+    side_effect=ConnectionError("daemon down"),
+)
 @patch("jsonschema_ts._converter._to_npx_subprocess")
 def test_to_npx_falls_back_on_daemon_error(mock_subprocess, mock_daemon_convert):
     mock_subprocess.return_value = MOCK_TS
@@ -142,7 +145,10 @@ def test_to_npx_falls_back_on_daemon_error(mock_subprocess, mock_daemon_convert)
     mock_subprocess.assert_called_once_with(schema, opts)
 
 
-@patch("jsonschema_ts._converter.daemon_convert", side_effect=ConversionError("daemon fail"))
+@patch(
+    "jsonschema_ts._converter.daemon_convert",
+    side_effect=ConversionError("daemon fail"),
+)
 @patch("jsonschema_ts._converter._to_npx_subprocess")
 def test_to_npx_falls_back_on_conversion_error(mock_subprocess, mock_daemon_convert):
     mock_subprocess.return_value = MOCK_TS
@@ -152,8 +158,14 @@ def test_to_npx_falls_back_on_conversion_error(mock_subprocess, mock_daemon_conv
     mock_subprocess.assert_called_once()
 
 
-@patch("jsonschema_ts._converter.daemon_convert", side_effect=ConversionError("fail"))
-@patch("jsonschema_ts._converter._to_npx_subprocess", side_effect=ConversionError("subprocess also fail"))
+@patch(
+    "jsonschema_ts._converter.daemon_convert",
+    side_effect=ConversionError("fail"),
+)
+@patch(
+    "jsonschema_ts._converter._to_npx_subprocess",
+    side_effect=ConversionError("subprocess also fail"),
+)
 def test_to_npx_raises_when_both_fail(mock_subprocess, mock_daemon_convert):
     opts = Options(use_daemon=True)
     with pytest.raises(ConversionError, match="subprocess also fail"):
