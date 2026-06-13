@@ -10,3 +10,4 @@ class Options:
     unknown_any: bool = True
     unreachable_definitions: bool = True
     npx_cache: str | None = None
+    use_daemon: bool = True
