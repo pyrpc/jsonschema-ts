@@ -7,6 +7,7 @@ from unittest.mock import patch
 import pytest
 
 from jsonschema_ts import ConversionError, Options, convert, convert_all
+from jsonschema_ts._converter import _build_daemon_options, _to_npx, _to_npx_subprocess
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -101,6 +102,112 @@ def test_convert_raises_conversion_error(mock_to_npx):
     with pytest.raises(ConversionError, match="fail"):
         convert({"type": "object"}, "Bad")
 
+
+
+# ── Daemon integration tests (mocked daemon layer) ────────────────
+
+
+@patch("jsonschema_ts._converter.daemon_convert")
+def test_to_npx_tries_daemon_first(mock_daemon_convert):
+    mock_daemon_convert.return_value = MOCK_TS
+    opts = Options(use_daemon=True)
+    schema = {"type": "object", "title": "User"}
+    result = _to_npx(schema, opts)
+    assert result == MOCK_TS
+    mock_daemon_convert.assert_called_once()
+    call_schema, call_opts = mock_daemon_convert.call_args[0]
+    assert call_schema == schema
+    assert call_opts["unknownAny"] is True
+
+
+@patch("jsonschema_ts._converter._to_npx_subprocess")
+def test_to_npx_skips_daemon_when_disabled(mock_subprocess):
+    mock_subprocess.return_value = MOCK_TS
+    opts = Options(use_daemon=False)
+    schema = {"type": "object", "title": "User"}
+    result = _to_npx(schema, opts)
+    assert result == MOCK_TS
+    mock_subprocess.assert_called_once_with(schema, opts)
+
+
+@patch("jsonschema_ts._converter.daemon_convert", side_effect=ConnectionError("daemon down"))
+@patch("jsonschema_ts._converter._to_npx_subprocess")
+def test_to_npx_falls_back_on_daemon_error(mock_subprocess, mock_daemon_convert):
+    mock_subprocess.return_value = MOCK_TS
+    opts = Options(use_daemon=True)
+    schema = {"type": "object", "title": "User"}
+    result = _to_npx(schema, opts)
+    assert result == MOCK_TS
+    mock_daemon_convert.assert_called_once()
+    mock_subprocess.assert_called_once_with(schema, opts)
+
+
+@patch("jsonschema_ts._converter.daemon_convert", side_effect=ConversionError("daemon fail"))
+@patch("jsonschema_ts._converter._to_npx_subprocess")
+def test_to_npx_falls_back_on_conversion_error(mock_subprocess, mock_daemon_convert):
+    mock_subprocess.return_value = MOCK_TS
+    opts = Options(use_daemon=True)
+    result = _to_npx({"type": "object", "title": "User"}, opts)
+    assert result == MOCK_TS
+    mock_subprocess.assert_called_once()
+
+
+@patch("jsonschema_ts._converter.daemon_convert", side_effect=ConversionError("fail"))
+@patch("jsonschema_ts._converter._to_npx_subprocess", side_effect=ConversionError("subprocess also fail"))
+def test_to_npx_raises_when_both_fail(mock_subprocess, mock_daemon_convert):
+    opts = Options(use_daemon=True)
+    with pytest.raises(ConversionError, match="subprocess also fail"):
+        _to_npx({"type": "object", "title": "User"}, opts)
+
+
+def test_build_daemon_options():
+    opts = Options(
+        banner_comment="custom banner",
+        format=False,
+        unknown_any=False,
+        unreachable_definitions=False,
+    )
+    result = _build_daemon_options(opts)
+    assert result["bannerComment"] == "custom banner"
+    assert result["format"] is False
+    assert result["unknownAny"] is False
+    assert result["unreachableDefinitions"] is False
+
+
+def test_build_daemon_options_defaults():
+    opts = Options()
+    result = _build_daemon_options(opts)
+    assert result["bannerComment"] == opts.banner_comment
+    assert result["format"] is True
+    assert result["unknownAny"] is True
+    assert result["unreachableDefinitions"] is True
+
+
+@patch("jsonschema_ts._converter.daemon_convert")
+def test_convert_uses_daemon_by_default(mock_daemon_convert):
+    mock_daemon_convert.return_value = MOCK_TS
+    schema = {"type": "object", "properties": {"name": {"type": "string"}}}
+    result = convert(schema, "User")
+    assert "export interface User" in result
+    mock_daemon_convert.assert_called_once()
+
+
+@patch("jsonschema_ts._converter._to_npx_subprocess")
+def test_convert_use_daemon_false_skips_daemon(mock_subprocess):
+    mock_subprocess.return_value = MOCK_TS
+    opts = Options(use_daemon=False)
+    schema = {"type": "object", "properties": {"name": {"type": "string"}}}
+    convert(schema, "User", opts=opts)
+    mock_subprocess.assert_called_once()
+
+
+@patch("jsonschema_ts._converter.daemon_convert")
+def test_convert_sets_title_before_daemon(mock_daemon_convert):
+    mock_daemon_convert.return_value = MOCK_TS
+    schema = {"type": "object", "properties": {"x": {"type": "integer"}}}
+    convert(schema, "Foo")
+    call_schema, _ = mock_daemon_convert.call_args[0]
+    assert call_schema["title"] == "Foo"
 
 
 # ── Integration tests (require npx) ──────────────────────────────
