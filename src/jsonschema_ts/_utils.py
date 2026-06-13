@@ -28,10 +28,24 @@ def _ensure_npx() -> None:
 def _to_safe_name(name: str) -> str:
     s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
     s = re.sub(r"[^a-zA-Z0-9]", " ", s)
-    s = s.title().replace(" ", "")
+    s = _to_pascal_case(s)
     if not s:
         s = "GeneratedType"
     return s
+
+
+def _to_pascal_case(s: str) -> str:
+    parts = s.split()
+    result: list[str] = []
+    for part in parts:
+        sub_parts = re.findall(
+            r"[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\d|\b)|[A-Z]+|\d+",
+            part,
+        )
+        if not sub_parts:
+            sub_parts = [part]
+        result.extend(sub_parts)
+    return "".join(seg.capitalize() for seg in result if seg)
 
 
 def _ensure_schema_has_title(schema: dict, name: str) -> None:

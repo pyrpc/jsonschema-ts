@@ -61,6 +61,33 @@ export interface UserWithAddress {
 }
 ```
 
+## Inline Models from Pydantic Dataclasses
+
+Pydantic dataclasses (`@pydantic.dataclasses.dataclass`) or `@model` decorators can produce
+schemas where the root object has `type: "object"` and a `title` but no `$defs` entry.
+In this case `collect_defs` returns `{}` and no interface is generated.
+
+Use `ensure_inline_models` to promote these inline models into synthetic `$defs` entries:
+
+```python
+from pydantic.dataclasses import dataclass
+from jsonschema_ts import ensure_inline_models, collect_defs, convert_all
+
+@dataclass
+class CreateUserInput:
+    name: str
+
+schema = CreateUserInput.__pydantic_serializer__.schema()
+# {"type": "object", "title": "CreateUserInput", "properties": {"name": ...}}
+
+schemas = ensure_inline_models(schema)
+defs = collect_defs(*schemas)
+models = convert_all(defs)
+# export interface CreateUserInput {
+#   name: string;
+# }
+```
+
 ## Full Pipeline Pattern
 
 Recommended pattern for pyRPC codegen:

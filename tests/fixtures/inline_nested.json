@@ -1,0 +1,15 @@
+{
+  "title": "Outer",
+  "type": "object",
+  "properties": {
+    "inner": {
+      "title": "Inner",
+      "type": "object",
+      "properties": {
+        "x": {"type": "integer"}
+      },
+      "required": ["x"]
+    }
+  },
+  "required": ["inner"]
+}

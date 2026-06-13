@@ -50,13 +50,18 @@ The first call to `convert()` will prompt `npx` to cache `json-schema-to-typescr
 ## Usage
 
 ```python
-from jsonschema_ts import convert, convert_all, collect_defs
+from jsonschema_ts import convert, convert_all, collect_defs, ensure_inline_models
 
 # Single schema
 ts = convert(schema, "MyType")
 
 # With $defs (for Pydantic models)
 defs = collect_defs(schema)
+model_ts = convert_all(defs)
+
+# Inline models from pydantic dataclasses (@model)
+schemas = ensure_inline_models(schema1, schema2)
+defs = collect_defs(*schemas)
 model_ts = convert_all(defs)
 
 # Full Pydantic pipeline
@@ -84,14 +89,16 @@ main = convert(schema, "User")
 | `convert(schema, name)` | Convert single JSON Schema → TypeScript interface |
 | `convert_all(defs)` | Convert all `$defs` → TypeScript interfaces (batch) |
 | `collect_defs(*schemas)` | Extract and merge `$defs` from schemas |
+| `ensure_inline_models(*schemas)` | Promote inline object schemas to `$defs` entries |
 | `assemble(models, procedures)` | Combine model interfaces + procedure types into final TS output |
 | `ensure_npx()` | Check Node.js/npx availability |
 
 ```python
-from jsonschema_ts import collect_defs, convert, convert_all, assemble
+from jsonschema_ts import collect_defs, convert, convert_all, ensure_inline_models, assemble
 
-# ... convert schemas to TypeScript ...
-defs = collect_defs(schema)
+# ... promote inline models, then collect and convert ...
+schemas = ensure_inline_models(raw_schema)
+defs = collect_defs(*schemas)
 models = convert_all(defs)
 
 # Combine everything into final output
