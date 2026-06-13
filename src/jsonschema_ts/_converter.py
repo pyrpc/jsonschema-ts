@@ -17,7 +17,7 @@ from jsonschema_ts._utils import (
 )
 
 NPX_ARGS_BASE = [
-    "npx",
+    "npx.cmd" if os.name == "nt" else "npx",
     "--package=json-schema-to-typescript",
     "json2ts",
     "--unreachableDefinitions",
