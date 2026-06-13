@@ -4,6 +4,7 @@
     "getting-started",
     "api",
     "pydantic-integration",
-    "options-reference"
+    "options-reference",
+    "npx-daemon"
   ]
 }
