@@ -8,6 +8,7 @@ from typing import Any
 
 from jsonschema_ts._emitter import _strip_root_interface
 from jsonschema_ts._errors import ConversionError
+from jsonschema_ts._npx_daemon import convert as daemon_convert
 from jsonschema_ts._options import Options
 from jsonschema_ts._utils import (
     _ensure_npx,
@@ -54,7 +55,27 @@ def convert_all(defs: dict[str, dict], opts: Options | None = None) -> str:
     return _strip_root_interface(ts_code)
 
 
+def _build_daemon_options(opts: Options) -> dict:
+    daemon_opts: dict[str, Any] = {
+        "bannerComment": opts.banner_comment,
+        "format": opts.format,
+        "unknownAny": opts.unknown_any,
+        "unreachableDefinitions": opts.unreachable_definitions,
+    }
+    return daemon_opts
+
+
 def _to_npx(schema: dict, opts: Options) -> str:
+    if opts.use_daemon:
+        try:
+            daemon_opts = _build_daemon_options(opts)
+            return daemon_convert(schema, daemon_opts)
+        except Exception:
+            pass
+    return _to_npx_subprocess(schema, opts)
+
+
+def _to_npx_subprocess(schema: dict, opts: Options) -> str:
     _ensure_npx()
 
     npx_args = list(NPX_ARGS_BASE)
