@@ -1,5 +1,5 @@
 from jsonschema_ts._converter import convert, convert_all
-from jsonschema_ts._defs_collector import collect_defs
+from jsonschema_ts._defs_collector import collect_defs, ensure_inline_models
 from jsonschema_ts._emitter import assemble
 from jsonschema_ts._errors import ConversionError, JsonschemaTsError, NodeRequiredError
 from jsonschema_ts._options import Options
@@ -11,6 +11,7 @@ __all__ = [
     "convert",
     "convert_all",
     "collect_defs",
+    "ensure_inline_models",
     "assemble",
     "ensure_npx",
     "Options",
